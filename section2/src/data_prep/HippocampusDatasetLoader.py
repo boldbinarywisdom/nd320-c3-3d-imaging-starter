@@ -26,12 +26,17 @@ def LoadHippocampusData(root_dir, y_shape, z_shape):
     image_dir = os.path.join(root_dir, 'images')
     label_dir = os.path.join(root_dir, 'labels')
 
-    images = [f for f in listdir(image_dir) if (
-        isfile(join(image_dir, f)) and f[0] != ".")]
+    #images = [f for f in listdir(image_dir) if (
+    #    isfile(join(image_dir, f)) and f[0] != ".")]
+
+    images = []
+    for f in listdir(image_dir):
+        if isfile(join(image_dir, f)) and f[0] != ".":
+            images.append(f)
 
     out = []
     for f in images:
-
+        print(f)
         # We would benefit from mmap load method here if dataset doesn't fit into memory
         # Images are loaded here using MedPy's load method. We will ignore header 
         # since we will not use it
@@ -40,6 +45,11 @@ def LoadHippocampusData(root_dir, y_shape, z_shape):
 
         # TASK: normalize all images (but not labels) so that values are in [0..1] range
         # <YOUR CODE GOES HERE>
+        #__solution
+        image = image.astype(np.single)/np.max(image)
+        #print("np max is:", np.max(image))
+        #image = mage.astype(np.single)/255
+        #image = (image - image.min()) / (image.max() - image.min())
 
         # We need to reshape data since CNN tensors that represent minibatches
         # in our case will be stacks of slices and stacks need to be of the same size.
@@ -49,11 +59,16 @@ def LoadHippocampusData(root_dir, y_shape, z_shape):
         # extend 2 dimensions out of 3. We choose to extend coronal and sagittal here
 
         # TASK: med_reshape function is not complete. Go and fix it!
+        #y_shape = 512
+        #z_shape = 241
         image = med_reshape(image, new_shape=(image.shape[0], y_shape, z_shape))
+        print(type(image))
+
         label = med_reshape(label, new_shape=(label.shape[0], y_shape, z_shape)).astype(int)
 
         # TASK: Why do we need to cast label to int?
-        # ANSWER: 
+        # ANSWER:   
+        #__solution: labels cannot be floating point
 
         out.append({"image": image, "seg": label, "filename": f})
 

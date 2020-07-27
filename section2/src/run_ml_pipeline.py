@@ -13,12 +13,12 @@ class Config:
     """
     def __init__(self):
         self.name = "Basic_unet"
-        self.root_dir = r"YOUR DIRECTORY HERE"
         self.n_epochs = 10
         self.learning_rate = 0.0002
         self.batch_size = 8
         self.patch_size = 64
-        self.test_results_dir = "RESULTS GO HERE"
+        self.test_results_dir = "/home/workspace/section2/out"
+        self.root_dir = r"/home/workspace/src/data/TrainingSet"
 
 if __name__ == "__main__":
     # Get configuration
@@ -49,10 +49,16 @@ if __name__ == "__main__":
     # the array with indices of training volumes to be used for training, validation 
     # and testing respectively.
     # <YOUR CODE GOES HERE>
+    #__solution
+    # We are splitting 60:20:20 for train: val and test for the dataset
+    split = {'train':keys[0:int(max(keys)*0.6)],
+            'val':keys[int(max(keys)*0.6):int(max(keys)*0.8)],
+            'test':keys[int(max(keys)*0.8):max(keys)]}
 
     # Set up and run experiment
     
     # TASK: Class UNetExperiment has missing pieces. Go to the file and fill them in
+    #__solution in UNetExperiment
     exp = UNetExperiment(c, split, data)
 
     # You could free up memory by deleting the dataset

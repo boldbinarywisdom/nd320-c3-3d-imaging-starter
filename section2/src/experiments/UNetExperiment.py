@@ -96,10 +96,11 @@ class UNetExperiment:
             # TASK: You have your data in batch variable. Put the slices as 4D Torch Tensors of 
             # shape [BATCH_SIZE, 1, PATCH_SIZE, PATCH_SIZE] into variables data and target. 
             # Feed data to the model and feed target to the loss function
-            # 
-            # data = <YOUR CODE HERE>
-            # target = <YOUR CODE HERE>
-
+            # __solution
+            data = batch['image']
+            target = batch['seg']
+            
+            # Now predict on data
             prediction = self.model(data)
 
             # We are also getting softmax'd version of prediction to output a probability map
@@ -154,6 +155,15 @@ class UNetExperiment:
                 
                 # TASK: Write validation code that will compute loss on a validation sample
                 # <YOUR CODE HERE>
+                # __solution
+                data = batch['image']
+                target = batch['seg']
+                prediction = self.model(data)
+
+                # below logged to tensorboard in addition to prediction
+                prediction_softmax = F.softmax(prediction, dim=1)
+
+                loss = self.loss_function(prediction, target[:, 0, :, :])
 
                 print(f"Batch {i}. Data shape {data.shape} Loss {loss}")
 
@@ -232,6 +242,7 @@ class UNetExperiment:
             # on Wikipedia. If you completed it
             # correctly (and if you picked your train/val/test split right ;)),
             # your average Jaccard on your test set should be around 0.80
+            #__solution
 
             dc = Dice3d(pred_label, x["seg"])
             jc = Jaccard3d(pred_label, x["seg"])
